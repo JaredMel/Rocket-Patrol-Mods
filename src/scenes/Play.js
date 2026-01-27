@@ -21,9 +21,11 @@ class Play extends Phaser.Scene {
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         // add spaceships (x3)
-        this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'spaceship', 0, 30).setOrigin(0, 0);
-        this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'spaceship', 0, 20).setOrigin(0, 0);
-        this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10).setOrigin(0, 0);
+        this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*5, 'spaceship', 0, 30).setOrigin(0, 0);
+        this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*6 + borderPadding*3, 'spaceship', 0, 20).setOrigin(0, 0);
+        this.ship03 = new Spaceship(this, game.config.width, borderUISize*7 + borderPadding*5, 'spaceship', 0, 10).setOrigin(0, 0);
+        // add meteor
+        this.meteor = new Meteor(this, game.config.width, borderUISize*2 + borderPadding*4, 'meteor', 0, 50).setOrigin(0, 0);
         // initialize score
         this.p1Score = 0;
         // display score
@@ -49,8 +51,23 @@ class Play extends Phaser.Scene {
             this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or <- for Menu', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);
+        // display time
+        let timeConfig = {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#F3B141',
+            color: '#843605',
+            align: 'right',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 100
+        }
+        this.timeLeft = this.add.text(borderUISize*8 + borderPadding, borderUISize + borderPadding*2, this.clock.now, timeConfig);
     }
     update() {
+        this.timeLeft.text = this.clock.now;
         // check key input for restart
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyRESET)) {
             this.scene.restart();
@@ -64,6 +81,8 @@ class Play extends Phaser.Scene {
             this.ship01.update(); // update spaceships (x3)
             this.ship02.update();
             this.ship03.update();
+            this.meteor.update();
+            // this.meteor.anims.play('meteorMove');
         }
         // check collision
         if(this.checkCollision(this.p1Rocket, this.ship03)) {
@@ -77,6 +96,10 @@ class Play extends Phaser.Scene {
         if(this.checkCollision(this.p1Rocket, this.ship01)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship01);
+        }
+        if(this.checkCollision(this.p1Rocket, this.meteor)) {
+            this.p1Rocket.reset();
+            this.shipExplode(this.meteor);
         }
     }
     checkCollision(rocket, ship) {
@@ -101,6 +124,7 @@ class Play extends Phaser.Scene {
         // score add and text update
         this.p1Score += ship.points;
         this.scoreLeft.text = this.p1Score;
+        this.clock += 10;
         this.sound.play('sfx-explosion');
     }
 }
