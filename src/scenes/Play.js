@@ -64,10 +64,10 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 100
         }
-        this.timeLeft = this.add.text(borderUISize*8 + borderPadding, borderUISize + borderPadding*2, this.clock.now, timeConfig);
+        this.timeLeft = this.add.text(borderUISize*8 + borderPadding, borderUISize + borderPadding*2, Phaser.Math.CeilTo(this.clock.getRemainingSeconds()), timeConfig);
     }
     update() {
-        this.timeLeft.text = this.clock.now;
+        this.timeLeft.text = Phaser.Math.CeilTo(this.clock.getRemainingSeconds());
         // check key input for restart
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyRESET)) {
             this.scene.restart();
@@ -101,6 +101,10 @@ class Play extends Phaser.Scene {
             this.p1Rocket.reset();
             this.shipExplode(this.meteor);
         }
+        if(this.p1Rocket.missed) {
+            this.clock.delay -= 5000;
+            this.p1Rocket.missed = false;
+        }
     }
     checkCollision(rocket, ship) {
         // simple AABB checking
@@ -124,7 +128,7 @@ class Play extends Phaser.Scene {
         // score add and text update
         this.p1Score += ship.points;
         this.scoreLeft.text = this.p1Score;
-        this.clock += 10;
+        this.clock.delay += 5000;
         this.sound.play('sfx-explosion');
     }
 }
