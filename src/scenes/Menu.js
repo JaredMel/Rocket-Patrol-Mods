@@ -15,6 +15,7 @@ class Menu extends Phaser.Scene {
         });
         this.load.image('starfield', './assets/starfield.png');
         this.load.image('planets', './assets/planets.png');
+        this.load.image('title-screen', './assets/title-screen.png');
         this.load.spritesheet('explosion', './assets/explosion.png', {
             frameWidth: 64,
             frameHeight: 32,
@@ -32,18 +33,18 @@ class Menu extends Phaser.Scene {
             key: 'explode',
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
             frameRate: 30
-        })
+        });
         this.anims.create({
             key: 'meteorMove',
             frames: this.anims.generateFrameNumbers('meteor', { start: 0, end: 1 }),
             frameRate: 30,
             repeat: -1
-        })
+        });
         let menuConfig = {
-            fontFamily: 'Courier',
-            fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
+            fontFamily: 'Commando',
+            fontSize: '48px',
+            //backgroundColor: '#fcfcfc',
+            color: '#ffffff',
             align: 'right',
             padding: {
                 top: 5,
@@ -51,12 +52,14 @@ class Menu extends Phaser.Scene {
             },
             fixedWidth: 0
         };
+        this.titleScreen = this.add.tileSprite(0, 0, 640, 480, 'title-screen').setOrigin(0, 0);
         // display menu text
-        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'ROCKET PATROL', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2, 'Use <-> arrows to move & (F) to fire', menuConfig).setOrigin(0.5);
-        menuConfig.backgroundColor = '#00FF00';
-        menuConfig.color = '#000';
-        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Press <- for Novice or -> Expert', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/6 - borderUISize - borderPadding, 'ROCKET PATROL', menuConfig).setOrigin(0.5);
+        menuConfig.fontSize = '28px';
+        this.add.text(game.config.width/2, game.config.height/5, 'Use <-> arrows to move & (F) to fire', menuConfig).setOrigin(0.5);
+        //menuConfig.backgroundColor = '#00FF00';
+        menuConfig.color = '#ffffff';
+        this.add.text(game.config.width/2, game.config.height/4 + borderUISize + borderPadding, 'Press <- for Novice or -> Expert', menuConfig).setOrigin(0.5);
         // define keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
