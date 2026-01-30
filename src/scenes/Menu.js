@@ -14,6 +14,7 @@ class Menu extends Phaser.Scene {
             endFrame: 1
         });
         this.load.image('starfield', './assets/starfield.png');
+        this.load.image('planets', './assets/planets.png');
         this.load.spritesheet('explosion', './assets/explosion.png', {
             frameWidth: 64,
             frameHeight: 32,
